@@ -18,7 +18,7 @@ export default function Home() {
   const handleGenerate = async (type: 'text' | 'file', content: string | File) => {
     setIsGenerating(true);
     setError(null);
-    
+
     try {
       let contentString = '';
       if (typeof content === 'string') {
@@ -37,7 +37,7 @@ export default function Home() {
 
       if (result.success && result.quiz) {
         let quizId = 'quiz-' + Date.now();
-        
+
         // Save to Firestore if logged in
         if (user) {
           const firestoreId = await saveQuizToHistory(user.uid, result.quiz);
@@ -45,7 +45,7 @@ export default function Home() {
             quizId = firestoreId;
           }
         }
-        
+
         // Also save to localStorage for immediate access/fallback
         localStorage.setItem(quizId, JSON.stringify(result.quiz));
         router.push(`/quiz/${quizId}`);
@@ -66,7 +66,7 @@ export default function Home() {
     setTimeout(async () => {
       setIsGenerating(false);
       let quizId = 'quiz-' + Date.now();
-      
+
       const mockQuiz: Quiz = {
         title: type === 'file' && content instanceof File ? content.name : 'Generated Quiz (Mock)',
         questions: [
@@ -101,14 +101,14 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 flex flex-col items-center p-8 sm:p-20 font-sans">
         <div className="text-center mb-12 max-w-2xl">
           <h1 className="text-4xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             Turn anything into a <span className="text-primary">Quiz</span>
           </h1>
           <p className="text-muted-foreground text-lg">
-            Upload your study notes, documents, or paste a link. 
+            Upload your study notes, documents, or paste a link.
             Quizrr uses AI to generate personalized quizzes instantly.
           </p>
         </div>
@@ -120,6 +120,17 @@ export default function Home() {
         )}
 
         <UploadSection onGenerate={handleGenerate} isGenerating={isGenerating} />
+        {user && (
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={() => router.push('/history')}
+              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm"
+            >
+              <span>View Quiz History</span>
+              <span aria-hidden>→</span>
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
