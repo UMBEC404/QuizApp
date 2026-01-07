@@ -18,20 +18,21 @@ export function Header() {
           <span>BrainTest AI</span>
         </Link>
         <nav className="flex items-center gap-6">
+          <p>V1.0.0</p>
           <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
             Dashboard
           </Link>
-          
+
           {user ? (
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setShowMenu(!showMenu)}
                 className="flex items-center gap-2 hover:opacity-80 transition-opacity"
               >
                 {user.photoURL ? (
-                  <img 
-                    src={user.photoURL} 
-                    alt={user.displayName || "User"} 
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || "User"}
                     className="w-8 h-8 rounded-full border border-border"
                   />
                 ) : (
@@ -43,8 +44,8 @@ export function Header() {
 
               {showMenu && (
                 <>
-                  <div 
-                    className="fixed inset-0 z-10" 
+                  <div
+                    className="fixed inset-0 z-10"
                     onClick={() => setShowMenu(false)}
                   />
                   <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-xl z-20 py-1">
@@ -52,8 +53,8 @@ export function Header() {
                       <p className="text-sm font-medium truncate">{user.displayName || "User"}</p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
-                    <Link 
-                      href="/history" 
+                    <Link
+                      href="/history"
                       className="block px-4 py-2 text-sm hover:bg-muted transition-colors"
                       onClick={() => setShowMenu(false)}
                     >
@@ -74,8 +75,8 @@ export function Header() {
               )}
             </div>
           ) : (
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold hover:brightness-110 transition-all"
             >
               Sign In
