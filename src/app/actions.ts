@@ -27,7 +27,7 @@ export async function generateQuizAction(
   }
 
   const prompt = `
-    You are a helpful AI teacher. Create a quiz with 5-12 questions based on the following content.
+    You are a helpful AI teacher. Create a quiz with 9-12 questions based on the following content.
     Return ONLY a valid JSON object with the following structure:
     {
       "title": "Quiz Title",
