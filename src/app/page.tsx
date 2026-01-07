@@ -9,11 +9,45 @@ import { Quiz } from '@/lib/types';
 import { useAuth } from '@/context/AuthContext';
 import { saveQuizToHistory } from '@/lib/firestore';
 
+// Extra imports for PDF/DOCX parsing
+import * as pdfjsLib from 'pdfjs-dist';
+import mammoth from 'mammoth';
+
 export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { user } = useAuth();
+
+  // Helper to extract text from uploaded files
+  const readFileContent = async (file: File): Promise<string> => {
+    if (file.type.startsWith('text/') || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+      return await file.text();
+    } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+      // PDF parsing
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+      let text = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map((item: any) => item.str).join(' ') + '\n';
+      }
+      return text;
+    } else if (
+      file.type ===
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      file.name.endsWith('.docx')
+    ) {
+      // DOCX parsing
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result.value;
+    } else {
+      // Fallback for unsupported files
+      return `File Name: ${file.name} (Content extraction not supported for this file type yet)`;
+    }
+  };
 
   const handleGenerate = async (type: 'text' | 'file', content: string | File) => {
     setIsGenerating(true);
@@ -24,13 +58,7 @@ export default function Home() {
       if (typeof content === 'string') {
         contentString = content;
       } else if (content instanceof File) {
-        // Try to read text content if it's a text file
-        if (content.type.startsWith('text/') || content.name.endsWith('.txt') || content.name.endsWith('.md')) {
-          contentString = await content.text();
-        } else {
-          // Fallback for other files (PDFs, etc. - requires more complex parsing)
-          contentString = `File Name: ${content.name} (Content extraction not supported for this file type yet)`;
-        }
+        contentString = await readFileContent(content);
       }
 
       const result = await generateQuizAction(type, contentString);
@@ -41,23 +69,20 @@ export default function Home() {
         // Save to Firestore if logged in
         if (user) {
           const firestoreId = await saveQuizToHistory(user.uid, result.quiz);
-          if (firestoreId) {
-            quizId = firestoreId;
-          }
+          if (firestoreId) quizId = firestoreId;
         }
 
-        // Also save to localStorage for immediate access/fallback
+        // Save to localStorage as fallback
         localStorage.setItem(quizId, JSON.stringify(result.quiz));
         router.push(`/quiz/${quizId}`);
       } else {
-        console.error("Quiz generation failed:", result.error);
-        setError(result.error || "Failed to generate quiz");
+        console.error('Quiz generation failed:', result.error);
+        setError(result.error || 'Failed to generate quiz');
         setIsGenerating(false);
-        // Do not fallback to mock data on error to let user know something is wrong
       }
     } catch (error: any) {
-      console.error("Generation failed:", error);
-      setError(error.message || "An unexpected error occurred");
+      console.error('Generation failed:', error);
+      setError(error.message || 'An unexpected error occurred');
       setIsGenerating(false);
     }
   };
@@ -76,16 +101,16 @@ export default function Home() {
             question: 'What is the primary goal of this uploaded content?',
             options: ['To inform', 'To entertain', 'To persuade', 'To confuse'],
             answer: 'To inform',
-            explanation: 'Most educational content aims to inform the reader.'
+            explanation: 'Most educational content aims to inform the reader.',
           },
           {
             id: 2,
             type: 'short-answer',
             question: 'Summarize the main point in one sentence.',
             answer: 'The content discusses...',
-            explanation: 'A summary should capture the core message concisely.'
-          }
-        ]
+            explanation: 'A summary should capture the core message concisely.',
+          },
+        ],
       };
 
       if (user) {
@@ -108,8 +133,8 @@ export default function Home() {
             Turn anything into a <span className="text-primary">Quiz</span>
           </h1>
           <p className="text-muted-foreground text-lg">
-            Upload your study notes, documents, or paste a link.
-            Quizrr uses AI to generate personalized quizzes instantly.
+            Upload your study notes, documents, or paste a link. Quizrr uses AI to generate personalized
+            quizzes instantly.
           </p>
         </div>
 
@@ -120,6 +145,7 @@ export default function Home() {
         )}
 
         <UploadSection onGenerate={handleGenerate} isGenerating={isGenerating} />
+
         {user && (
           <div className="mt-6 flex justify-center">
             <button
