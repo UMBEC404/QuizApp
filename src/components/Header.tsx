@@ -15,7 +15,7 @@ export function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary">
           <BrainCircuit className="w-8 h-8" />
-          <span>Quizrr</span>
+          <span>BrainTest AI</span>
         </Link>
         <nav className="flex items-center gap-6">
           <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
