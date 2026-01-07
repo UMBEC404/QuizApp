@@ -7,23 +7,23 @@ export async function generateQuizAction(
   type: 'text' | 'file',
   content: string
 ): Promise<{ success: boolean; quiz?: Quiz; error?: string }> {
-  
+
   if (!process.env.HUGGINGFACE_API_KEY || process.env.HUGGINGFACE_API_KEY === 'hf_your_token_here') {
     return { success: false, error: "Hugging Face API Key is not configured." };
   }
 
   // In a real app, we would parse the file here.
   // For this prototype, we assume 'content' is the text to process.
-  
+
   let promptContent = content;
   if (type === 'file') {
-     // If the content starts with "File Name:", it means we couldn't extract text.
-     // Otherwise, it's the actual text content.
-     if (content.startsWith('File Name:')) {
-        promptContent = `Generate a general quiz based on the topic implied by this filename: ${content}`;
-     } else {
-        promptContent = `Generate a quiz based on the following file content: ${content}`;
-     }
+    // If the content starts with "File Name:", it means we couldn't extract text.
+    // Otherwise, it's the actual text content.
+    if (content.startsWith('File Name:')) {
+      promptContent = `Generate a general quiz based on the topic implied by this filename: ${content}`;
+    } else {
+      promptContent = `Generate a quiz based on the following file content: ${content}`;
+    }
   }
 
   const prompt = `
@@ -68,16 +68,23 @@ export async function generateQuizAction(
     // Clean up potential markdown code blocks if the model adds them
     const cleanContent = responseContent.replace(/```json/g, '').replace(/```/g, '').trim();
 
-    const quizData = JSON.parse(cleanContent);
-    
+    let quizData;
+    try {
+      quizData = JSON.parse(cleanContent);
+    } catch (err) {
+      console.error("Invalid JSON from AI:", cleanContent);
+      return { success: false, error: "Quiz generation failed: AI returned invalid JSON." };
+    }
+
+
     // Add IDs if missing or ensure structure
     const questions = quizData.questions.map((q: any, index: number) => ({
       ...q,
       id: index + 1
     }));
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       quiz: {
         title: quizData.title || "Generated Quiz",
         questions
@@ -119,8 +126,8 @@ export async function generateExplanationAction(
       max_tokens: 300,
     });
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       explanation: completion.choices[0].message.content || "No explanation generated."
     };
   } catch (error) {
