@@ -11,6 +11,7 @@ import { saveQuizToHistory } from "@/lib/firestore";
 import mammoth from "mammoth";
 
 let pdfjsLib: any;
+const errmsg = "An Error Occured. Please try again later";
 
 export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -86,12 +87,12 @@ export default function Home() {
         localStorage.setItem(quizId, JSON.stringify(result.quiz));
         router.push(`/quiz/${quizId}`);
       } else {
-        console.error("Quiz generation failed:", result.error);
+        console.error(errmsg);
         setError(result.error || "Failed to generate quiz");
         setIsGenerating(false);
       }
     } catch (error: any) {
-      console.error("Generation failed:", error);
+      console.error(errmsg);
       setError(error.message || "An unexpected error occurred");
       setIsGenerating(false);
     }
