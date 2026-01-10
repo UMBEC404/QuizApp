@@ -100,7 +100,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Results Not Found</h1>
-          <p className="text-muted-foreground mb-8 color-white">
+          <p className="text-muted-foreground mb-8 ">
             The results you are looking for do not exist or have expired.
           </p>
           <button
@@ -170,7 +170,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
                 ? "Keep Practicing!"
                 : "Don't Give Up!"}
             </h1>
-            <p className="text-muted-foreground mb-6 color-white">
+            <p className="text-muted-foreground mb-6 ">
               You answered {result.score} out of {result.total} questions
               correctly.
             </p>
