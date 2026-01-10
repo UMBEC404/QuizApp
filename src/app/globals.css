@@ -49,7 +49,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  -webkit-text-stroke: #1a1526 0.2px;
 }
 
 @utility text-gradient {
@@ -75,10 +74,10 @@ body {
   background-repeat: no-repeat;
 }
 
-span.code {
+p.code {
   font-family: var(--font-mono), monospace;
   background-color: rgba(255, 255, 255, 0.1);
   padding: 0.2em 0.4em;
   border-radius: 4px;
-  
+  -webkit-text-stroke: #ffffff 0.2px;
 }
