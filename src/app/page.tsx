@@ -87,7 +87,7 @@ export default function LandingPage() {
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/2490/2490291.png"
                     alt="Study illustration"
-                    className="w-full rounded-lg object-cover h-64"
+                    className="w-full rounded-lg object-cover h-60"
                   />
                 </div>
               </div>
