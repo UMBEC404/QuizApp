@@ -91,7 +91,7 @@ export default function LandingPage() {
                     </svg>
                     <p className="text-muted-foreground mb-2">Drag and drop your file here</p>
                     <p className="text-xs text-muted-foreground mb-4">PDF, DOCX, TXT (Max 10MB)</p>
-                    <a className="hidden" href="/app"><label htmlFor="file-upload" className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-md cursor-pointer border border-border" >Browse Files</label></a>
+                    <a className="hidden" href="/app" /><label htmlFor="file-upload" className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-md cursor-pointer border border-border" >Browse Files</label>
                     </div>
                 </div>
               </div>
