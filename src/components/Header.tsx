@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { BrainCircuit, LogOut, User as UserIcon } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import { clsx } from 'clsx';
-import { useState } from 'react';
+import Link from "next/link";
+import { BrainCircuit, LogOut, User as UserIcon } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { clsx } from "clsx";
+import { useState } from "react";
 
 export function Header() {
   const { user, signOut } = useAuth();
@@ -13,13 +13,19 @@ export function Header() {
   return (
     <header className="border-b border-border bg-background/50 backdrop-blur-sm sticky top-0 z-10">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-primary">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-2xl font-bold text-primary"
+        >
           <BrainCircuit className="w-8 h-8" />
           <span>BrainTest AI</span>
         </Link>
         <nav className="flex items-center gap-6">
-          <p>V1.0.0</p>
-          <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+          <p>V1.0.1</p>
+          <Link
+            href="/"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Dashboard
           </Link>
 
@@ -50,8 +56,12 @@ export function Header() {
                   />
                   <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-xl z-20 py-1">
                     <div className="px-4 py-2 border-b border-border">
-                      <p className="text-sm font-medium truncate">{user.displayName || "User"}</p>
-                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                      <p className="text-sm font-medium truncate">
+                        {user.displayName || "User"}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {user.email}
+                      </p>
                     </div>
                     <Link
                       href="/history"
