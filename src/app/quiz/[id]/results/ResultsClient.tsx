@@ -104,7 +104,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
             The results you are looking for do not exist or have expired.
           </p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/app")}
             className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
           >
             <Home className="w-4 h-4" />
@@ -177,14 +177,14 @@ export function ResultsClient({ id }: ResultsClientProps) {
 
             <div className="flex justify-center gap-4">
               <button
-                onClick={() => router.push(`/quiz/${id}`)}
+                onClick={() => router.push(`/app/quiz/${id}`)}
                 className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
               >
                 <RotateCcw className="w-4 h-4" />
                 Retake Quiz
               </button>
               <button
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/app")}
                 className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
               >
                 <Home className="w-4 h-4" />
@@ -274,14 +274,14 @@ export function ResultsClient({ id }: ResultsClientProps) {
         {/* Actions */}
         <div className="mt-8 flex justify-center gap-4">
           <button
-            onClick={() => router.push(`/quiz/${id}`)}
+            onClick={() => router.push(`/app/quiz/${id}`)}
             className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
           >
             <RotateCcw className="w-4 h-4" />
             Retake Quiz
           </button>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/app")}
             className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
           >
             <Home className="w-4 h-4" />

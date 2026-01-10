@@ -16,7 +16,7 @@ export default function HistoryPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login");
+      router.push("/app/login");
       return;
     }
 
@@ -54,7 +54,7 @@ export default function HistoryPage() {
               Create your first quiz to see it here!
             </p>
             <Link
-              href="/"
+              href="/app"
               className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all"
             >
               Create Quiz
@@ -65,7 +65,7 @@ export default function HistoryPage() {
             {quizzes.map((quiz) => (
               <Link
                 key={quiz.id}
-                href={`/quiz/${quiz.id}`}
+                href={`/app/quiz/${quiz.id}`}
                 className="bg-card border border-border p-6 rounded-lg flex items-center justify-between hover:border-primary/50 transition-colors group"
               >
                 <div>

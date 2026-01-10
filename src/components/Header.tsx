@@ -14,7 +14,7 @@ export function Header() {
     <header className="border-b border-border bg-background/50 backdrop-blur-sm sticky top-0 z-10">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link
-          href="/"
+          href="/app"
           className="flex items-center gap-2 text-2xl font-bold text-gradient"
         >
           <BrainCircuit className="w-8 h-8" />
@@ -24,7 +24,7 @@ export function Header() {
           <p>V1.1.2</p>
           <a href="https://github.com/UMBEC404">Follow Creator on Github</a>
           <Link
-            href="/"
+            href="/app"
             className="text-sm font-medium hover:text-gradient transition-colors"
           >
             Dashboard
@@ -65,7 +65,7 @@ export function Header() {
                       </p>
                     </div>
                     <Link
-                      href="/history"
+                      href="/app/history"
                       className="block px-4 py-2 text-sm hover:bg-muted transition-colors"
                       onClick={() => setShowMenu(false)}
                     >
@@ -87,7 +87,7 @@ export function Header() {
             </div>
           ) : (
             <Link
-              href="/login"
+              href="/app/login"
               className="bg-gradient text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition-all"
             >
               Sign In

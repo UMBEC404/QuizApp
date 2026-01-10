@@ -51,7 +51,7 @@ export function QuizClient({ id }: QuizClientProps) {
             The quiz you are looking for does not exist or has expired.
           </p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/app")}
             className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-bold"
           >
             Go Home
@@ -98,7 +98,7 @@ export function QuizClient({ id }: QuizClientProps) {
     };
     localStorage.setItem(`${id}-result`, JSON.stringify(result));
 
-    router.push(`/quiz/${id}/results`);
+    router.push(`/app/quiz/${id}/results`);
   };
 
   return (
