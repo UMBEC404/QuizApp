@@ -21,7 +21,7 @@ export function Header() {
           <span>BrainTest AI</span>
         </Link>
         <nav className="flex items-center gap-6">
-          <p>V1.0.1</p>
+          <p>V1.0.2</p>
           <Link
             href="/"
             className="text-sm font-medium hover:text-primary transition-colors"
