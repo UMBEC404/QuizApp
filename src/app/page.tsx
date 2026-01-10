@@ -18,8 +18,8 @@ if (typeof window !== "undefined") {
   // Dynamically load pdfjs-dist and set worker
   import("pdfjs-dist").then((pdfjs) => {
     pdfjsLib = pdfjs;
-    // Use CDN for worker matching the installed version
-    pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+    // Use jsdelivr for worker matching the installed version
+    pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.530/build/pdf.worker.min.mjs`;
   });
 }
 
