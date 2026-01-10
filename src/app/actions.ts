@@ -66,14 +66,32 @@ export async function generateQuizAction(
     }
 
     // Clean up potential markdown code blocks if the model adds them
-    const cleanContent = responseContent.replace(/```json/g, '').replace(/```/g, '').trim();
+    let cleanContent = responseContent.replace(/```json/g, '').replace(/```/g, '').trim();
 
     let quizData;
     try {
       quizData = JSON.parse(cleanContent);
     } catch (err) {
-      console.error("Invalid JSON from AI:", cleanContent);
-      return { success: false, error: "Quiz generation failed: AI returned invalid JSON." };
+      // Try to extract JSON from the response using regex
+      const jsonMatch = responseContent.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          cleanContent = jsonMatch[0];
+          quizData = JSON.parse(cleanContent);
+        } catch (e) {
+          console.error("Invalid JSON from AI:", cleanContent);
+          return { success: false, error: "Quiz generation failed: AI returned invalid JSON." };
+        }
+      } else {
+        console.error("Invalid JSON from AI:", cleanContent);
+        return { success: false, error: "Quiz generation failed: AI returned invalid JSON." };
+      }
+    }
+
+    // Validate required structure
+    if (!quizData.title || !Array.isArray(quizData.questions)) {
+      console.error("Invalid quiz structure from AI:", quizData);
+      return { success: false, error: "Quiz generation failed: AI returned incomplete quiz data." };
     }
 
 

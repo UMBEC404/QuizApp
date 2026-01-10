@@ -13,6 +13,16 @@ import mammoth from "mammoth";
 let pdfjsLib: any;
 const errmsg = "An Error Occured. Please try again later";
 
+// Set PDF.js worker source (required for pdfjs-dist v5+)
+if (typeof window !== "undefined") {
+  // Dynamically load pdfjs-dist and set worker
+  import("pdfjs-dist").then((pdfjs) => {
+    pdfjsLib = pdfjs;
+    // Use CDN for worker matching the installed version
+    pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+  });
+}
+
 export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
