@@ -69,7 +69,7 @@ export default function HistoryPage() {
                 className="bg-card border border-border p-6 rounded-lg flex items-center justify-between hover:border-primary/50 transition-colors group"
               >
                 <div>
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-gradient transition-colors">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-gradient transition-colors font-fira">
                     {quiz.title}
                   </h3>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -83,7 +83,7 @@ export default function HistoryPage() {
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:text-gradient transition-colors" />
               </Link>
             ))}
           </div>

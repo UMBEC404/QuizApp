@@ -138,7 +138,7 @@ export default function Home() {
           <div className="mt-6 flex justify-center">
             <button
               onClick={() => router.push("/history")}
-              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm"
+              className="flex items-center gap-2 text-muted-foreground hover:text-gradient transition-colors text-sm"
             >
               <span>View Quiz History</span>
               <span aria-hidden="true">→</span>

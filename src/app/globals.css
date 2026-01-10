@@ -7,7 +7,7 @@
   --foreground: #ffffff;
 
   /* Primary (SOLID – used for text, borders, etc.) */
-  --primary: #a3e635;
+  --primary: #f8682f;
 
   /* Primary Gradient (used for backgrounds & gradient text) */
   --primary-gradient: linear-gradient(
@@ -42,12 +42,14 @@
   
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-fira: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-text-stroke: #1a1526 0.2px;
 }
 
 @utility text-gradient {
@@ -55,6 +57,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  font-family: var(--font-geist-sans), mono;
 }
 
 @utility bg-gradient {
@@ -70,4 +73,12 @@ body {
   background-size: 100% 2px;
   background-position: 0 100%;
   background-repeat: no-repeat;
+}
+
+span.code {
+  font-family: var(--font-mono), monospace;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  
 }

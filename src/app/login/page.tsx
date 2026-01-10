@@ -152,7 +152,7 @@ export default function LoginPage() {
               setIsSignUp(!isSignUp);
               setError(null);
             }}
-            className="ml-2 text-gradient hover:underline font-medium focus:outline-none"
+            className="ml-2 text-gradient hover:underline font-medium focus:outline-none font-fira"
           >
             {isSignUp ? "Sign In" : "Sign Up"}
           </button>

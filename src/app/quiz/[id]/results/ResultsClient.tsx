@@ -145,7 +145,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
                   fill="transparent"
                   strokeDasharray="351.86"
                   strokeDashoffset={351.86 - (351.86 * percentage) / 100}
-                  className="text-primary transition-all duration-1000 ease-out"
+                  className="text-gradient transition-all duration-1000 ease-out"
                   style={{
                     strokeLinecap: "round",
                   }}
@@ -213,7 +213,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
               >
                 <div className="flex items-start gap-3">
                   {isCorrect ? (
-                    <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-6 h-6 text-gradient flex-shrink-0 mt-0.5" />
                   ) : (
                     <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
                   )}
@@ -244,7 +244,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
                     {/* AI Explanation */}
                     {explanations[question.id] ? (
                       <div className="mt-3 p-4 bg-muted/50 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2 text-primary">
+                        <div className="flex items-center gap-2 mb-2 text-gradient">
                           <Sparkles className="w-4 h-4" />
                           <span className="text-sm font-semibold">
                             AI Explanation
@@ -256,7 +256,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
                       <button
                         onClick={() => handleGetExplanation(question)}
                         disabled={loadingExplanation[question.id]}
-                        className="mt-3 text-xs flex items-center gap-1 text-primary hover:underline disabled:opacity-50 cursor-pointer"
+                        className="mt-3 text-xs flex items-center gap-1 text-gradient hover:underline disabled:opacity-50 cursor-pointer"
                       >
                         <Sparkles className="w-3 h-3" />
                         {loadingExplanation[question.id]

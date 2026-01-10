@@ -89,7 +89,7 @@ export function UploadSection({
               Browse Files
             </label>
             {fileContent && (
-              <p className="mt-4 text-primary font-medium">
+              <p className="mt-4 text-gradient font-medium">
                 {fileContent.name}
               </p>
             )}

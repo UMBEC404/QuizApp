@@ -154,7 +154,7 @@ export function QuizClient({ id }: QuizClientProps) {
                     {isSelected ? (
                       <CheckCircle2 className="w-5 h-5 text-gradient" />
                     ) : (
-                      <Circle className="w-5 h-5 text-muted-foreground group-hover:text-primary/50" />
+                      <Circle className="w-5 h-5 text-muted-foreground group-hover:text-gradient" />
                     )}
                   </button>
                 );

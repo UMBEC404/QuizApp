@@ -24,7 +24,7 @@ export function Header() {
           <p>V1.1.2</p>
           <Link
             href="/"
-            className="text-sm font-medium hover:text-primary transition-colors"
+            className="text-sm font-medium hover:text-gradient transition-colors"
           >
             Dashboard
           </Link>
