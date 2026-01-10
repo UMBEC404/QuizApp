@@ -15,13 +15,13 @@ export function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2 text-2xl font-bold text-primary"
+          className="flex items-center gap-2 text-2xl font-bold text-gradient"
         >
           <BrainCircuit className="w-8 h-8" />
           <span>BrainTest AI</span>
         </Link>
         <nav className="flex items-center gap-6">
-          <p>V1.0.2</p>
+          <p>V1.1.2</p>
           <Link
             href="/"
             className="text-sm font-medium hover:text-primary transition-colors"
@@ -87,7 +87,7 @@ export function Header() {
           ) : (
             <Link
               href="/login"
-              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-bold hover:brightness-110 transition-all"
+              className="bg-gradient text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition-all"
             >
               Sign In
             </Link>

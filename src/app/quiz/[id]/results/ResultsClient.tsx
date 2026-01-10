@@ -1,12 +1,24 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Header } from '@/components/Header';
-import { Quiz, QuizResult } from '@/lib/types';
-import { CheckCircle2, XCircle, RefreshCw, Home, Sparkles } from 'lucide-react';
-import { clsx } from 'clsx';
-import { generateExplanationAction } from '@/app/actions';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Header } from "@/components/Header";
+import { Quiz, Question } from "@/lib/types";
+import {
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  Home,
+  Sparkles,
+  Share2,
+} from "lucide-react";
+
+interface ResultData {
+  quizId: string;
+  score: number;
+  total: number;
+  answers: { [key: number]: string };
+}
 
 interface ResultsClientProps {
   id: string;
@@ -14,36 +26,64 @@ interface ResultsClientProps {
 
 export function ResultsClient({ id }: ResultsClientProps) {
   const router = useRouter();
+
   const [quiz, setQuiz] = useState<Quiz | null>(null);
-  const [result, setResult] = useState<QuizResult | null>(null);
-  const [aiExplanations, setAiExplanations] = useState<{ [key: number]: string }>({});
-  const [loadingExplanation, setLoadingExplanation] = useState<{ [key: number]: boolean }>({});
+  const [result, setResult] = useState<ResultData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [explanations, setExplanations] = useState<{ [key: number]: string }>(
+    {}
+  );
+  const [loadingExplanation, setLoadingExplanation] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   useEffect(() => {
-    const savedQuiz = localStorage.getItem(id);
-    const savedResult = localStorage.getItem(`${id}-result`);
+    if (!id) return;
 
-    if (savedQuiz && savedResult) {
+    // Load quiz
+    const savedQuiz = localStorage.getItem(id);
+    if (savedQuiz) {
       setQuiz(JSON.parse(savedQuiz));
+    }
+
+    // Load result
+    const savedResult = localStorage.getItem(`${id}-result`);
+    if (savedResult) {
       setResult(JSON.parse(savedResult));
     }
+
+    setLoading(false);
   }, [id]);
 
-  const handleAskAI = async (questionId: number, question: string, userAnswer: string, correctAnswer: string) => {
-    setLoadingExplanation(prev => ({ ...prev, [questionId]: true }));
+  const handleGetExplanation = async (question: Question) => {
+    setLoadingExplanation((prev) => ({ ...prev, [question.id]: true }));
+
     try {
-      const response = await generateExplanationAction(question, userAnswer, correctAnswer);
-      if (response.success && response.explanation) {
-        setAiExplanations(prev => ({ ...prev, [questionId]: response.explanation! }));
+      const response = await fetch("/api/generate-explanation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: question.question,
+          userAnswer: result?.answers[question.id] || "",
+          correctAnswer: question.answer,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setExplanations((prev) => ({
+          ...prev,
+          [question.id]: data.explanation,
+        }));
       }
     } catch (error) {
-      console.error("Failed to get AI explanation", error);
+      console.error("Failed to get explanation:", error);
     } finally {
-      setLoadingExplanation(prev => ({ ...prev, [questionId]: false }));
+      setLoadingExplanation((prev) => ({ ...prev, [question.id]: false }));
     }
   };
 
-  if (!quiz || !result) {
+  if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -54,117 +94,176 @@ export function ResultsClient({ id }: ResultsClientProps) {
     );
   }
 
-  const percentage = Math.round((result.score / result.total) * 100);
+  if (!quiz || !result) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+          <h1 className="text-2xl font-bold mb-4">Results Not Found</h1>
+          <p className="text-muted-foreground mb-8">
+            The results you are looking for do not exist or have expired.
+          </p>
+          <button
+            onClick={() => router.push("/")}
+            className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Go Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const percentage = (result.score / result.total) * 100;
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
 
       <main className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-6">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold mb-2">Quiz Results</h1>
-          <p className="text-muted-foreground">{quiz.title}</p>
-          
-          <div className="mt-8 flex justify-center">
-            <div className="relative w-40 h-40 flex items-center justify-center rounded-full border-4 border-muted">
-              {/* Better Circle Implementation using SVG */}
-              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+        {/* Score Card */}
+        <div className="bg-card border border-border rounded-xl p-8 shadow-lg mb-8">
+          <div className="text-center">
+            <div className="relative inline-flex items-center justify-center mb-6">
+              <svg className="w-32 h-32 transform -rotate-90">
                 <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
+                  cx="64"
+                  cy="64"
+                  r="56"
                   stroke="currentColor"
-                  strokeWidth="8"
+                  strokeWidth="12"
+                  fill="transparent"
                   className="text-muted"
                 />
                 <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
+                  cx="64"
+                  cy="64"
+                  r="56"
                   stroke="currentColor"
-                  strokeWidth="8"
-                  strokeDasharray="283"
-                  strokeDashoffset={283 - (283 * percentage) / 100}
+                  strokeWidth="12"
+                  fill="transparent"
+                  strokeDasharray="351.86"
+                  strokeDashoffset={351.86 - (351.86 * percentage) / 100}
                   className="text-primary transition-all duration-1000 ease-out"
+                  style={{
+                    strokeLinecap: "round",
+                  }}
                 />
               </svg>
-              <div className="flex flex-col items-center">
-                <span className="text-4xl font-bold">{percentage}%</span>
-                <span className="text-sm text-muted-foreground">{result.score}/{result.total} Correct</span>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-3xl font-bold">{result.score}</div>
+                  <div className="text-sm text-muted-foreground">
+                    / {result.total}
+                  </div>
+                </div>
               </div>
+            </div>
+
+            <h1 className="text-3xl font-bold mb-2">
+              {percentage >= 80
+                ? "Excellent!"
+                : percentage >= 60
+                ? "Good Job!"
+                : percentage >= 40
+                ? "Keep Practicing!"
+                : "Don't Give Up!"}
+            </h1>
+            <p className="text-muted-foreground mb-6">
+              You answered {result.score} out of {result.total} questions
+              correctly.
+            </p>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => router.push(`/quiz/${id}`)}
+                className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Retake Quiz
+              </button>
+              <button
+                onClick={() => router.push("/")}
+                className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
+              >
+                <Home className="w-4 h-4" />
+                Home
+              </button>
             </div>
           </div>
         </div>
 
+        {/* Question Review */}
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold">Review</h2>
-          
-          {quiz.questions.map((question, idx) => {
+          <h2 className="text-2xl font-bold">Question Review</h2>
+
+          {quiz.questions.map((question, index) => {
             const userAnswer = result.answers[question.id];
             const isCorrect = userAnswer === question.answer;
 
             return (
-              <div key={question.id} className="bg-card border border-border rounded-xl p-6">
-                <div className="flex items-start gap-4">
-                  <div className="mt-1">
-                    {isCorrect ? (
-                      <CheckCircle2 className="w-6 h-6 text-primary" />
-                    ) : (
-                      <XCircle className="w-6 h-6 text-red-500" />
-                    )}
-                  </div>
+              <div
+                key={question.id}
+                className={`p-4 rounded-lg border ${
+                  isCorrect
+                    ? "bg-primary/10 border-primary text-primary-foreground"
+                    : "bg-red-500/10 border-red-500/50 text-red-200"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  {isCorrect ? (
+                    <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
+                  )}
+
                   <div className="flex-1">
-                    <p className="font-medium text-lg mb-4">
-                      <span className="text-muted-foreground mr-2">{idx + 1}.</span>
-                      {question.question}
+                    <p className="font-medium mb-2">
+                      {index + 1}. {question.question}
                     </p>
 
-                    <div className="space-y-2">
-                      <div className={clsx(
-                        "p-3 rounded-lg border",
-                        isCorrect ? "bg-primary/10 border-primary text-primary-foreground" : "bg-red-500/10 border-red-500/50 text-red-200"
-                      )}>
-                        <p className="text-sm font-semibold mb-1">Your Answer:</p>
-                        <p>{userAnswer || 'No answer'}</p>
+                    {!isCorrect && (
+                      <div className="mb-3">
+                        <p className="text-sm opacity-80">
+                          Your answer:{" "}
+                          <span className="font-medium">
+                            {userAnswer || "No answer"}
+                          </span>
+                        </p>
                       </div>
+                    )}
 
-                      {!isCorrect && (
-                        <div className="p-3 rounded-lg border border-primary/50 bg-primary/5">
-                          <p className="text-sm font-semibold mb-1 text-primary">Correct Answer:</p>
-                          <p>{question.answer}</p>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Basic Explanation */}
-                    <div className="mt-4 p-4 bg-muted/30 rounded-lg text-sm text-muted-foreground">
-                      <p className="font-semibold mb-1">Explanation:</p>
-                      <p>{question.explanation || "No standard explanation provided."}</p>
+                    <div className="p-3 rounded-lg border border-primary/50 bg-primary/5">
+                      <p className="text-sm font-semibold mb-1 text-gradient">
+                        Correct Answer:
+                      </p>
+                      <p>{question.answer}</p>
                     </div>
 
-                    {/* Ask AI Section */}
-                    <div className="mt-4">
-                      {aiExplanations[question.id] ? (
-                        <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-                          <div className="flex items-center gap-2 mb-2 text-primary">
-                            <Sparkles className="w-4 h-4" />
-                            <span className="font-semibold text-sm">AI Explanation</span>
-                          </div>
-                          <p className="text-sm text-foreground">{aiExplanations[question.id]}</p>
+                    {/* AI Explanation */}
+                    {explanations[question.id] ? (
+                      <div className="mt-3 p-4 bg-muted/50 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2 text-primary">
+                          <Sparkles className="w-4 h-4" />
+                          <span className="text-sm font-semibold">
+                            AI Explanation
+                          </span>
                         </div>
-                      ) : (
-                        <button
-                          onClick={() => handleAskAI(question.id, question.question, userAnswer, question.answer)}
-                          disabled={loadingExplanation[question.id]}
-                          className="text-xs flex items-center gap-1 text-primary hover:underline disabled:opacity-50"
-                        >
-                          <Sparkles className="w-3 h-3" />
-                          {loadingExplanation[question.id] ? "Generating..." : "Ask AI for detailed explanation"}
-                        </button>
-                      )}
-                    </div>
+                        <p className="text-sm">{explanations[question.id]}</p>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleGetExplanation(question)}
+                        disabled={loadingExplanation[question.id]}
+                        className="mt-3 text-xs flex items-center gap-1 text-primary hover:underline disabled:opacity-50 cursor-pointer"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        {loadingExplanation[question.id]
+                          ? "Generating..."
+                          : "Get AI Explanation"}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -172,20 +271,21 @@ export function ResultsClient({ id }: ResultsClientProps) {
           })}
         </div>
 
-        <div className="mt-12 flex justify-center gap-4">
-          <button
-            onClick={() => router.push('/')}
-            className="flex items-center gap-2 px-6 py-3 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-colors font-medium"
-          >
-            <Home className="w-5 h-5" />
-            Go Home
-          </button>
+        {/* Actions */}
+        <div className="mt-8 flex justify-center gap-4">
           <button
             onClick={() => router.push(`/quiz/${id}`)}
-            className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:brightness-110 transition-colors font-bold"
+            className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
           >
-            <RefreshCw className="w-5 h-5" />
+            <RotateCcw className="w-4 h-4" />
             Retake Quiz
+          </button>
+          <button
+            onClick={() => router.push("/")}
+            className="bg-gradient text-white px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Create New Quiz
           </button>
         </div>
       </main>

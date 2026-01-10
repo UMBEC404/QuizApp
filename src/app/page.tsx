@@ -115,7 +115,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col items-center p-8 sm:p-20 font-sans">
         <div className="text-center mb-12 max-w-2xl">
           <h1 className="text-4xl sm:text-6xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            Turn anything into a <span className="text-primary">Quiz</span>
+            Turn anything into a <span className="text-gradient">Quiz</span>
           </h1>
           <p className="text-muted-foreground text-lg">
             Upload your study notes, documents, or paste a link. Quizrr uses AI

@@ -1,22 +1,23 @@
-'use client';
+"use client";
 
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { BrainCircuit, Mail, Lock } from 'lucide-react';
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { BrainCircuit, Mail, Lock } from "lucide-react";
 
 export default function LoginPage() {
-  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, loading } = useAuth();
+  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, loading } =
+    useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (user) {
-      router.push('/');
+      router.push("/");
     }
   }, [user, router]);
 
@@ -32,10 +33,12 @@ export default function LoginPage() {
         await signInWithEmail(email, password);
       }
     } catch (err: any) {
-      if (err.code === 'auth/operation-not-allowed') {
-        setError('Email/Password sign-in is not enabled in Firebase Console. Please enable it in the Authentication > Sign-in method tab.');
+      if (err.code === "auth/operation-not-allowed") {
+        setError(
+          "Email/Password sign-in is not enabled in Firebase Console. Please enable it in the Authentication > Sign-in method tab."
+        );
       } else {
-        setError(err.message || 'An error occurred during authentication');
+        setError(err.message || "An error occurred during authentication");
       }
     } finally {
       setIsSubmitting(false);
@@ -47,10 +50,12 @@ export default function LoginPage() {
     try {
       await signInWithGoogle();
     } catch (err: any) {
-      if (err.code === 'auth/operation-not-allowed') {
-        setError('Google sign-in is not enabled in Firebase Console. Please enable it in the Authentication > Sign-in method tab.');
+      if (err.code === "auth/operation-not-allowed") {
+        setError(
+          "Google sign-in is not enabled in Firebase Console. Please enable it in the Authentication > Sign-in method tab."
+        );
       } else {
-        setError(err.message || 'An error occurred during Google sign-in');
+        setError(err.message || "An error occurred during Google sign-in");
       }
     }
   };
@@ -66,13 +71,15 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
       <div className="w-full max-w-md bg-card border border-border rounded-xl p-8 shadow-lg text-center">
-        <div className="flex justify-center mb-6 text-primary">
-          <BrainCircuit className="w-16 h-16" />
+        <div className="flex justify-center mb-6">
+          <BrainCircuit className="w-16 h-16 text-gradient" />
         </div>
-        
+
         <h1 className="text-3xl font-bold mb-2">Welcome to Quizrr</h1>
         <p className="text-muted-foreground mb-8">
-          {isSignUp ? "Create an account to get started" : "Sign in to continue your progress"}
+          {isSignUp
+            ? "Create an account to get started"
+            : "Sign in to continue your progress"}
         </p>
 
         {error && (
@@ -109,9 +116,9 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-primary text-primary-foreground font-bold py-3 px-4 rounded-lg hover:brightness-110 transition-all disabled:opacity-50"
+            className="w-full bg-gradient text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
           >
-            {isSubmitting ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
+            {isSubmitting ? "Processing..." : isSignUp ? "Sign Up" : "Sign In"}
           </button>
         </form>
 
@@ -120,7 +127,9 @@ export default function LoginPage() {
             <div className="w-full border-t border-border"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-card text-muted-foreground">Or continue with</span>
+            <span className="px-2 bg-card text-muted-foreground">
+              Or continue with
+            </span>
           </div>
         </div>
 
@@ -128,9 +137,9 @@ export default function LoginPage() {
           onClick={handleGoogleSignIn}
           className="w-full flex items-center justify-center gap-3 bg-white text-black font-medium py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors"
         >
-          <img 
-            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
-            alt="Google" 
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
             className="w-5 h-5"
           />
           Google
@@ -138,9 +147,12 @@ export default function LoginPage() {
 
         <p className="mt-8 text-sm text-muted-foreground">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}
-          <button 
-            onClick={() => { setIsSignUp(!isSignUp); setError(null); }}
-            className="ml-2 text-primary hover:underline font-medium focus:outline-none"
+          <button
+            onClick={() => {
+              setIsSignUp(!isSignUp);
+              setError(null);
+            }}
+            className="ml-2 text-gradient hover:underline font-medium focus:outline-none"
           >
             {isSignUp ? "Sign In" : "Sign Up"}
           </button>
