@@ -84,11 +84,15 @@ export default function LandingPage() {
             >
               <div className="w-full max-w-md bg-card border border-border rounded-xl p-6 shadow-lg">
                 <div className="bg-gradient-to-tr from-primary/20 via-transparent to-transparent rounded-lg p-6">
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/2490/2490291.png"
-                    alt="Study illustration"
-                    className="w-full rounded-lg object-cover h-60"
-                  />
+                  <div className="flex-1 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center p-8 hover:bg-muted/10 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-upload w-12 h-12 text-muted-foreground mb-4" aria-hidden="true">
+                    <path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    </svg>
+                    <p className="text-muted-foreground mb-2">Drag and drop your file here</p>
+                    <p className="text-xs text-muted-foreground mb-4">PDF, DOCX, TXT (Max 10MB)</p>
+                    <link className="hidden" href="/app" /><label htmlFor="file-upload" className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-md cursor-pointer border border-border" >Browse Files</label>
+                    </div>
                 </div>
               </div>
             </motion.div>

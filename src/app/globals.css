@@ -76,7 +76,6 @@ body {
 
 p {
   font-family: var(--font-mono), monospace;
-  background-color: rgba(255, 255, 255, 0.1);
   padding: 0.2em 0.4em;
   border-radius: 4px;
   color: #ffffff;
