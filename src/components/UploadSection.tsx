@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { FileText, Upload, Type } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -9,17 +10,21 @@ type UploadType = "text" | "file";
 interface UploadSectionProps {
   onGenerate: (type: UploadType, content: string | File) => void;
   isGenerating: boolean;
+  isAuthenticated?: boolean;
 }
 
 export function UploadSection({
   onGenerate,
   isGenerating,
+  isAuthenticated = true,
 }: UploadSectionProps) {
   const [activeTab, setActiveTab] = useState<UploadType>("text");
   const [textContent, setTextContent] = useState("");
   const [fileContent, setFileContent] = useState<File | null>(null);
 
   const handleGenerate = () => {
+    if (!isAuthenticated) return; // Safety: require auth before generating
+
     let content: string | File = "";
     if (activeTab === "text") content = textContent;
     else if (activeTab === "file" && fileContent) content = fileContent;
@@ -58,6 +63,12 @@ export function UploadSection({
       </div>
 
       <div className="p-6 min-h-[300px] flex flex-col">
+        {!isAuthenticated && (
+          <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-300 rounded-md text-yellow-700 text-sm text-center">
+            Please <Link href="/app/login" className="underline font-medium">sign in</Link> to generate quizzes.
+          </div>
+        )}
+
         {activeTab === "text" && (
           <textarea
             className="flex-1 w-full bg-background border border-border rounded-lg p-4 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
@@ -97,26 +108,36 @@ export function UploadSection({
         )}
 
         <div className="mt-6 flex justify-end">
-          <button
-            onClick={handleGenerate}
-            disabled={
-              isGenerating ||
-              (activeTab === "text" ? !textContent : !fileContent)
-            }
-            className="bg-gradient text-white px-8 py-3 rounded-lg font-bold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {isGenerating ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <FileText className="w-4 h-4" />
-                Generate Quiz
-              </>
-            )}
-          </button>
+          {isAuthenticated ? (
+            <button
+              onClick={handleGenerate}
+              disabled={
+                isGenerating ||
+                (activeTab === "text" ? !textContent : !fileContent)
+              }
+              className="bg-gradient text-white px-8 py-3 rounded-lg font-bold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {isGenerating ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/50 border-t-white rounded-full animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <FileText className="w-4 h-4" />
+                  Generate Quiz
+                </>
+              )}
+            </button>
+          ) : (
+            <Link
+              href="/app/login"
+              className="bg-gradient text-white px-8 py-3 rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2"
+            >
+              <FileText className="w-4 h-4" />
+              Sign in to Generate
+            </Link>
+          )}
         </div>
       </div>
     </div>

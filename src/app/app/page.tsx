@@ -129,9 +129,18 @@ export default function AppHome() {
           </div>
         )}
 
+        {!user && (
+          <div className="mb-6 max-w-2xl w-full px-4">
+            <div className="bg-yellow-500/10 border border-yellow-300 text-yellow-700 px-4 py-3 rounded-md text-sm text-center">
+              You must <button onClick={() => router.push('/app/login')} className="underline font-medium">sign in</button> to generate quizzes.
+            </div>
+          </div>
+        )}
+
         <UploadSection
           onGenerate={handleGenerate}
           isGenerating={isGenerating}
+          isAuthenticated={!!user}
         />
 
         {user && (
