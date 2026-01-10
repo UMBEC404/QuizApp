@@ -22,6 +22,7 @@ export function Header() {
         </Link>
         <nav className="flex items-center gap-6">
           <p>V1.1.2</p>
+          <a href="https://github.com/UMBEC404">Follow Creator on Github</a>
           <Link
             href="/"
             className="text-sm font-medium hover:text-gradient transition-colors"
