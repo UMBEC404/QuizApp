@@ -90,7 +90,6 @@ export default function LandingPage() {
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     </svg>
                     <p className="text-muted-foreground mb-2">File Upload Capabilities</p>
-                    <a className="hidden" href="/app" /><label htmlFor="file-upload" className="bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-md cursor-pointer border border-border" >Browse Files</label>
                     </div>
                 </div>
               </div>
