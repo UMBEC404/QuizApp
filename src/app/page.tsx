@@ -85,7 +85,7 @@ export default function LandingPage() {
               <div className="w-full max-w-md bg-card border border-border rounded-xl p-6 shadow-lg">
                 <div className="bg-gradient-to-tr from-primary/20 via-transparent to-transparent rounded-lg p-6">
                   <img
-                    src="https://images.unsplash.com/photo-1555949963-aa79dcee981b?q=80&w=1200&auto=format&fit=crop"
+                    src="https://cdn-icons-png.flaticon.com/512/2490/2490291.png"
                     alt="Study illustration"
                     className="w-full rounded-lg object-cover h-64"
                   />
