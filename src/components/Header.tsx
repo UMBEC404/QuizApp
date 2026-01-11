@@ -22,7 +22,7 @@ export function Header() {
         </Link>
         <nav className="flex items-center gap-6">
           <p>V1.1.2</p>
-          <a href="https://github.com/UMBEC404">Follow Creator on Github</a>
+          <a href="https://github.com/UMBEC404/QuizApp">Follow Creator on Github</a>
 
           {user ? (
             <div className="relative">
