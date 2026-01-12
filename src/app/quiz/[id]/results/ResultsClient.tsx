@@ -208,7 +208,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
                 className={`p-4 rounded-lg border ${
                   isCorrect
                     ? "bg-primary/10 border-primary text-primary-foreground"
-                    : "bg-red-500/10 border-red-500/50 text-red-200"
+                    : "bg-green-500/10 border-green-500/50 text-green-200"
                 }`}
               >
                 <div className="flex items-start gap-3">
