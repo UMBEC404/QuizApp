@@ -1,10 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  /* Dark Blue Background */
-  --background: #0B1120;
-  /* White Foreground */
-  --foreground: #ffffff;
+  --background: #f5f5f5;
+  --foreground: #121212;
 
   /* Primary (SOLID – used for text, borders, etc.) */
   --primary: #f8682f;
