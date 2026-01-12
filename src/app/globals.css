@@ -12,10 +12,8 @@
   /* Primary Gradient (used for backgrounds & gradient text) */
   --primary-gradient: linear-gradient(
     45deg,
-    #f8682f,
-    #dd2c00,
-    #e92a4e,
-    #c447ff
+    #0061ff,
+    #60efff
   );
 
   --primary-foreground: #0B1120;
