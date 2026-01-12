@@ -213,7 +213,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
               >
                 <div className="flex items-start gap-3">
                   {isCorrect ? (
-                    <CheckCircle2 className="w-6 h-6 text-gradient flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
                   ) : (
                     <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
                   )}
