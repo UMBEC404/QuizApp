@@ -208,14 +208,14 @@ export function ResultsClient({ id }: ResultsClientProps) {
                 className={`p-4 rounded-lg border ${
                   isCorrect
                     ? "bg-primary/10 border-primary text-primary-foreground"
-                    : "bg-green-500/10 border-green-500/50 text-green-200"
+                    : "bg-red-500/10 border-red-500/50 text-red-200"
                 }`}
               >
                 <div className="flex items-start gap-3">
                   {isCorrect ? (
                     <CheckCircle2 className="w-6 h-6 text-gradient flex-shrink-0 mt-0.5" />
                   ) : (
-                    <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
+                    <XCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
                   )}
 
                   <div className="flex-1">
