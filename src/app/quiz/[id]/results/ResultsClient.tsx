@@ -207,7 +207,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
                 key={question.id}
                 className={`p-4 rounded-lg border ${
                   isCorrect
-                    ? "bg-primary/10 border-primary text-primary-foreground"
+                    ? "bg-green-500/10 border-green-500/50 text-primary-foreground"
                     : "bg-red-500/10 border-red-500/50 text-red-200"
                 }`}
               >
