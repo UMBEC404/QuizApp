@@ -8,7 +8,7 @@ import { clsx } from "clsx";
 type UploadType = "text" | "file";
 
 interface UploadSectionProps {
-  onGenerate: (type: UploadType, content: string | File) => void;
+  onGenerate: (type: UploadType, content: string | File, mode: "general" | "deep") => void; // <-- added mode
   isGenerating: boolean;
   isAuthenticated?: boolean;
 }
@@ -21,16 +21,17 @@ export function UploadSection({
   const [activeTab, setActiveTab] = useState<UploadType>("text");
   const [textContent, setTextContent] = useState("");
   const [fileContent, setFileContent] = useState<File | null>(null);
+  const [mode, setMode] = useState<"general" | "deep">("general"); // <-- new state
 
   const handleGenerate = () => {
-    if (!isAuthenticated) return; // Safety: require auth before generating
+    if (!isAuthenticated) return;
 
     let content: string | File = "";
     if (activeTab === "text") content = textContent;
     else if (activeTab === "file" && fileContent) content = fileContent;
 
-    if (!content) return; // Handle empty state
-    onGenerate(activeTab, content);
+    if (!content) return;
+    onGenerate(activeTab, content, mode); // <-- pass mode
   };
 
   return (
@@ -65,7 +66,11 @@ export function UploadSection({
       <div className="p-6 min-h-[300px] flex flex-col">
         {!isAuthenticated && (
           <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-300 rounded-md text-yellow-700 text-sm text-center">
-            Please <Link href="/app/login" className="underline font-medium">sign in</Link> to generate quizzes.
+            Please{" "}
+            <Link href="/app/login" className="underline font-medium">
+              sign in
+            </Link>{" "}
+            to generate quizzes.
           </div>
         )}
 
@@ -81,12 +86,8 @@ export function UploadSection({
         {activeTab === "file" && (
           <div className="flex-1 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center p-8 hover:bg-muted/10 transition-colors">
             <Upload className="w-12 h-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-2">
-              Drag and drop your file here
-            </p>
-            <p className="text-xs text-muted-foreground mb-4">
-              PDF, DOCX, TXT (Max 10MB)
-            </p>
+            <p className="text-muted-foreground mb-2">Drag and drop your file here</p>
+            <p className="text-xs text-muted-foreground mb-4">PDF, DOCX, TXT (Max 10MB)</p>
             <input
               type="file"
               className="hidden"
@@ -100,12 +101,27 @@ export function UploadSection({
               Browse Files
             </label>
             {fileContent && (
-              <p className="mt-4 text-gradient font-medium">
-                {fileContent.name}
-              </p>
+              <p className="mt-4 text-gradient font-medium">{fileContent.name}</p>
             )}
           </div>
         )}
+
+        {/* Mode Slider */}
+        <div className="mt-6 mb-4 flex items-center justify-center gap-4">
+          <span className="font-medium">General</span>
+          <label className="relative inline-block w-14 h-8">
+            <input
+              type="checkbox"
+              className="opacity-0 w-0 h-0"
+              checked={mode === "deep"}
+              onChange={() =>
+                setMode((prev) => (prev === "general" ? "deep" : "general"))
+              }
+            />
+            <span className="absolute cursor-pointer inset-0 bg-gray-300 rounded-full transition-colors before:absolute before:content-[''] before:left-1 before:top-1 before:w-6 before:h-6 before:bg-white before:rounded-full before:transition-transform checked:bg-gradient-to-r checked:from-purple-500 checked:to-pink-500 before:checked:translate-x-6"></span>
+          </label>
+          <span className="font-medium">Deep Understanding</span>
+        </div>
 
         <div className="mt-6 flex justify-end">
           {isAuthenticated ? (
