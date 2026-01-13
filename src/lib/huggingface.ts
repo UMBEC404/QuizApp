@@ -8,5 +8,4 @@ if (!apiKey || apiKey === 'hf_your_token_here') {
 
 export const hf = new InferenceClient(apiKey);
 
-// Using Llama-3-8B-Instruct as it is reliable on the free tier
-export const HF_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"; 
+export const HF_MODEL = "webml-community/llama-3.2-reasoning-webgpu"; 

@@ -1,29 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  /* Dark Blue Background */
-  --background: #0B1120;
-  /* White Foreground */
+  --background: #0b1120;
   --foreground: #ffffff;
 
   /* Primary (SOLID – used for text, borders, etc.) */
   --primary: #f8682f;
 
   /* Primary Gradient (used for backgrounds & gradient text) */
-  --primary-gradient: background: linear-gradient(90deg,rgba(0, 68, 240, 1) 0%, rgba(0, 118, 214, 1) 53%, rgba(0, 195, 255, 1) 100%);
+  --primary-gradient: linear-gradient(45deg, #0061ff, #60efff);
 
   --primary-foreground: #0B1120;
   
-  --card: #1e293b;
+  --card: #10192e;
   --card-foreground: #ffffff;
   
   --muted: #334155;
   --muted-foreground: #94a3b8;
   
-  --border: #334155;
+  --border: #0e1120;
 }
 
-@theme inline {
+.theme-inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -45,7 +43,7 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-@utility text-gradient {
+.text-gradient {
   background: var(--primary-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -53,15 +51,15 @@ body {
   font-family: var(--font-geist-sans), mono;
 }
 
-@utility bg-gradient {
+.bg-gradient {
   background: var(--primary-gradient);
 }
 
-@utility border-gradient {
+.border-gradient {
   border-image: var(--primary-gradient) 1;
 }
 
-@utility underline-gradient {
+.underline-gradient {
   background: var(--primary-gradient);
   background-size: 100% 2px;
   background-position: 0 100%;

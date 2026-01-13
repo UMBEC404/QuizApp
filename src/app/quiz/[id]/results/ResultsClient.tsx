@@ -207,13 +207,13 @@ export function ResultsClient({ id }: ResultsClientProps) {
                 key={question.id}
                 className={`p-4 rounded-lg border ${
                   isCorrect
-                    ? "bg-primary/10 border-primary text-primary-foreground"
+                    ? "bg-green-500/10 border-green-500/50 text-primary-foreground"
                     : "bg-red-500/10 border-red-500/50 text-red-200"
                 }`}
               >
                 <div className="flex items-start gap-3">
                   {isCorrect ? (
-                    <CheckCircle2 className="w-6 h-6 text-gradient flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
                   ) : (
                     <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
                   )}
@@ -234,7 +234,7 @@ export function ResultsClient({ id }: ResultsClientProps) {
                       </div>
                     )}
 
-                    <div className="p-3 rounded-lg border border-primary/50 bg-primary/5">
+                    <div className="p-3 rounded-lg border border-green-500/50 bg-red-500/10">
                       <p className="text-sm font-semibold mb-1 text-gradient">
                         Correct Answer:
                       </p>
