@@ -18,7 +18,7 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "Braintest AI",
+  title: "Quizzrd",
   description: "Your personalized AI quizzing companion",
 };
 
