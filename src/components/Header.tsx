@@ -18,7 +18,7 @@ export function Header() {
           className="flex items-center gap-2 text-2xl font-bold text-gradient"
         >
           <BrainCircuit className="w-8 h-8" />
-          <span>BrainTest AI</span>
+          <span>Quizzrd</span>
         </Link>
         <nav className="flex items-center gap-6">
           <p>V1.1.2</p>
