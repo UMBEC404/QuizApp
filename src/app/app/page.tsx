@@ -11,14 +11,12 @@ import { saveQuizToHistory } from "@/lib/firestore";
 import mammoth from "mammoth";
 
 let pdfjsLib: any;
-const errmsg = "An Error Occured. Please try again later";
+const errmsg = "An Error Occurred. Please try again later";
 
 // Set PDF.js worker source (required for pdfjs-dist v5+)
 if (typeof window !== "undefined") {
-  // Dynamically load pdfjs-dist and set worker
   import("pdfjs-dist").then((pdfjs) => {
     pdfjsLib = pdfjs;
-    // Use jsdelivr for worker matching the installed version
     pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.530/build/pdf.worker.min.mjs`;
   });
 }
@@ -26,6 +24,7 @@ if (typeof window !== "undefined") {
 export default function AppHome() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<"general" | "deep">("general"); // <-- new state
   const router = useRouter();
   const { user } = useAuth();
 
@@ -38,7 +37,6 @@ export default function AppHome() {
     ) {
       return await file.text();
     } else if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
-      // PDF parsing - dynamically load pdfjs only on client
       if (!pdfjsLib) {
         const pdfjs = await import("pdfjs-dist");
         pdfjsLib = pdfjs;
@@ -57,12 +55,10 @@ export default function AppHome() {
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
       file.name.endsWith(".docx")
     ) {
-      // DOCX parsing
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.extractRawText({ arrayBuffer });
       return result.value;
     } else {
-      // Fallback for unsupported files
       return `File Name: ${file.name} (Content extraction not supported for this file type yet)`;
     }
   };
@@ -82,18 +78,16 @@ export default function AppHome() {
         contentString = await readFileContent(content);
       }
 
-      const result = await generateQuizAction(type, contentString);
+      const result = await generateQuizAction(type, mode, contentString); // <-- pass mode
 
       if (result.success && result.quiz) {
         let quizId = "quiz-" + Date.now();
 
-        // Save to Firestore if logged in
         if (user) {
           const firestoreId = await saveQuizToHistory(user.uid, result.quiz);
           if (firestoreId) quizId = firestoreId;
         }
 
-        // Save to localStorage as fallback
         localStorage.setItem(quizId, JSON.stringify(result.quiz));
         router.push(`/app/quiz/${quizId}`);
       } else {
@@ -123,6 +117,23 @@ export default function AppHome() {
           </p>
         </div>
 
+        {/* Mode Slider */}
+        <div className="mb-8 flex items-center justify-center gap-4">
+          <span className="font-medium">General</span>
+          <label className="relative inline-block w-14 h-8">
+            <input
+              type="checkbox"
+              className="opacity-0 w-0 h-0"
+              checked={mode === "deep"}
+              onChange={() =>
+                setMode((prev) => (prev === "general" ? "deep" : "general"))
+              }
+            />
+            <span className="absolute cursor-pointer inset-0 bg-gray-300 rounded-full transition-colors before:absolute before:content-[''] before:left-1 before:top-1 before:w-6 before:h-6 before:bg-white before:rounded-full before:transition-transform checked:bg-gradient-to-r checked:from-purple-500 checked:to-pink-500 before:checked:translate-x-6"></span>
+          </label>
+          <span className="font-medium">Deep Understanding</span>
+        </div>
+
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-lg mb-8 max-w-2xl w-full text-center">
             {error}
@@ -132,7 +143,14 @@ export default function AppHome() {
         {!user && (
           <div className="mb-6 max-w-2xl w-full px-4">
             <div className="bg-yellow-500/10 border border-yellow-300 text-yellow-700 px-4 py-3 rounded-md text-sm text-center">
-              You must <button onClick={() => router.push('/app/login')} className="underline font-medium">sign in</button> to generate quizzes.
+              You must{" "}
+              <button
+                onClick={() => router.push("/app/login")}
+                className="underline font-medium"
+              >
+                sign in
+              </button>{" "}
+              to generate quizzes.
             </div>
           </div>
         )}
