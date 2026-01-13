@@ -117,23 +117,6 @@ export default function AppHome() {
           </p>
         </div>
 
-        {/* Mode Slider */}
-        <div className="mb-8 flex items-center justify-center gap-4">
-          <span className="font-medium">General</span>
-          <label className="relative inline-block w-14 h-8">
-            <input
-              type="checkbox"
-              className="opacity-0 w-0 h-0"
-              checked={mode === "deep"}
-              onChange={() =>
-                setMode((prev) => (prev === "general" ? "deep" : "general"))
-              }
-            />
-            <span className="absolute cursor-pointer inset-0 bg-gray-300 rounded-full transition-colors before:absolute before:content-[''] before:left-1 before:top-1 before:w-6 before:h-6 before:bg-white before:rounded-full before:transition-transform checked:bg-gradient-to-r checked:from-purple-500 checked:to-pink-500 before:checked:translate-x-6"></span>
-          </label>
-          <span className="font-medium">Deep Understanding</span>
-        </div>
-
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-lg mb-8 max-w-2xl w-full text-center">
             {error}
