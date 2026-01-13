@@ -3,13 +3,6 @@
 import { hf, HF_MODEL } from '@/lib/huggingface';
 import { Quiz } from '@/lib/types';
 
-/**
- * Removes indexed / numbered list prefixes that confuse the model
- * Example:
- * 1. hello
- * 2) world
- * 3 - test
- */
 function normalizeIndexedText(text: string): string {
   return text
     .replace(/^\s*\d+\s*[.)-]\s*/gm, '')
@@ -18,6 +11,7 @@ function normalizeIndexedText(text: string): string {
 
 export async function generateQuizAction(
   type: 'text' | 'file',
+  mode: 'general' | 'deep',
   content: string
 ): Promise<{ success: boolean; quiz?: Quiz; error?: string }> {
 
@@ -33,7 +27,7 @@ export async function generateQuizAction(
 
   if (type === 'file') {
     if (content.startsWith('File Name:')) {
-      promptContent = `Generate a general quiz based on the topic implied by this filename: ${content}`;
+      promptContent = `Generate a quiz based on the topic implied by this filename: ${content}`;
     } else {
       promptContent = normalizeIndexedText(
         `Generate a quiz based on the following file content:\n${content}`
@@ -41,8 +35,29 @@ export async function generateQuizAction(
     }
   }
 
+  // Mode-specific instructions
+  const modeInstruction =
+    mode === 'deep'
+      ? `
+Create a DEEP UNDERSTANDING quiz.
+- Focus on "why" and "how" questions
+- Test reasoning, cause-and-effect, and application of ideas
+- Include tricky distractors for multiple-choice questions
+- Prefer conceptual and analytical questions over memorization
+`
+      : `
+Create a GENERAL quiz.
+- Focus on basic understanding and recall
+- Include definitions, facts, and straightforward questions
+- Questions should be suitable for revision and quick assessment
+`;
+
   const prompt = `
-You are a helpful AI teacher. Create a quiz with 9-12 questions based on the following content.
+You are a helpful AI teacher.
+
+${modeInstruction}
+
+Create a quiz with 9-12 questions based on the following content.
 
 Return ONLY a valid JSON object with this structure:
 {
@@ -59,7 +74,10 @@ Return ONLY a valid JSON object with this structure:
   ]
 }
 
-IMPORTANT: Return ONLY raw JSON. No markdown. No extra text.
+IMPORTANT:
+- Return ONLY raw JSON
+- No markdown
+- No extra text
 
 Content:
 """
@@ -130,6 +148,9 @@ ${promptContent.substring(0, 3000)}
   }
 }
 
+/**
+ * Generate an explanation for a student's answer.
+ */
 export async function generateExplanationAction(
   question: string,
   userAnswer: string,
