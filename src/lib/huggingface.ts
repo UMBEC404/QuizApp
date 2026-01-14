@@ -8,4 +8,4 @@ if (!apiKey || apiKey === 'hf_your_token_here') {
 
 export const hf = new InferenceClient(apiKey);
 
-export const HF_MODEL = "google/flan-t5-large"; 
+export const HF_MODEL = "meta-llama/Meta-Llama-3-8B-Instruct"; 
