@@ -3,6 +3,13 @@
 import { hf, HF_MODEL } from '@/lib/huggingface';
 import { Quiz } from '@/lib/types';
 
+/**
+ * Removes indexed / numbered list prefixes that confuse the model
+ * Example:
+ * 1. hello
+ * 2) world
+ * 3 - test
+ */
 function normalizeIndexedText(text: string): string {
   return text
     .replace(/^\s*\d+\s*[.)-]\s*/gm, '')
@@ -42,24 +49,81 @@ export async function generateQuizAction(
 Create a DEEP UNDERSTANDING quiz.
 - Focus on "why" and "how" questions
 - Test reasoning, cause-and-effect, and application of ideas
-- Include tricky distractors for multiple-choice questions
-- Prefer conceptual and analytical questions over memorization
+- Include tricky distractors
+- Prefer analytical thinking over memorization
 `
       : `
 Create a GENERAL quiz.
 - Focus on basic understanding and recall
 - Include definitions, facts, and straightforward questions
-- Questions should be suitable for revision and quick assessment
+- Suitable for quick assessment and revision
+`;
+
+  // 🔒 STRICT RULESET
+  const strictRules = `
+STRICT RULES — MUST BE FOLLOWED EXACTLY:
+
+GENERAL OUTPUT RULES:
+- Output ONLY valid JSON
+- No markdown
+- No extra text
+- Preserve formatting such as **bold**, _italic_, symbols, and spacing
+- Do NOT escape formatting unless required by JSON
+
+MATH & SIMPLIFICATION RULES (CRITICAL):
+- Any simplification question MUST have a fully simplified answer
+- Fully simplified means:
+  - No common factors remain
+  - Fractions are reduced
+  - Like terms are combined
+  - No unnecessary parentheses
+  - Exponents are simplified
+- NEVER leave answers like:
+  - 2x + x
+  - 6/9
+  - (x)(x)
+- ALWAYS return:
+  - 3x
+  - 2/3
+  - x^2
+
+ALGEBRA & NOTATION RULES:
+- Use x^2, x^3 (NOT x² or x**2)
+- Do not use unicode superscripts
+- Use standard mathematical symbols
+- If solving equations, return ONLY the final answer
+- If multiple solutions exist, list them clearly
+
+QUESTION DESIGN RULES:
+- Questions must strictly match the provided content
+- Do not invent unrelated topics
+- Multiple-choice distractors must be realistic
+- Short-answer questions must have exactly ONE correct answer
+
+FORMATTING RULES:
+- Keep math readable and clean
+- Preserve emphasis (**bold**) from the source content
+- Maintain consistent notation throughout
 `;
 
   const prompt = `
-You are a helpful AI teacher.
+You are a professional exam designer and strict rule-following AI.
+
+${strictRules}
 
 ${modeInstruction}
 
-Create a quiz with 9-12 questions based on the following content.
+TASK:
+Create a quiz with 9–12 questions based ONLY on the content below.
 
-Return ONLY a valid JSON object with this structure:
+QUIZ REQUIREMENTS:
+- Mix multiple-choice and short-answer questions
+- Answers must be precise and unambiguous
+- Math answers MUST be fully simplified
+- Use x^2 style notation
+- Preserve formatting styles from the content
+
+RETURN THIS EXACT JSON STRUCTURE:
 {
   "title": "Quiz Title",
   "questions": [
@@ -69,17 +133,18 @@ Return ONLY a valid JSON object with this structure:
       "question": "Question text",
       "options": ["Option A", "Option B", "Option C", "Option D"],
       "answer": "Correct Answer",
-      "explanation": "Why this is the correct answer"
+      "explanation": "Clear explanation"
     }
   ]
 }
 
-IMPORTANT:
-- Return ONLY raw JSON
+FINAL WARNINGS:
+- Output ONLY raw JSON
 - No markdown
+- No comments
 - No extra text
 
-Content:
+CONTENT:
 """
 ${promptContent.substring(0, 3000)}
 """
@@ -99,7 +164,7 @@ ${promptContent.substring(0, 3000)}
         }
       ],
       max_tokens: 1500,
-      temperature: 0.7
+      temperature: 0.6
     });
 
     const responseContent = completion.choices[0].message.content;
@@ -129,7 +194,8 @@ ${promptContent.substring(0, 3000)}
 
     const questions = quizData.questions.map((q: any, index: number) => ({
       ...q,
-      id: index + 1
+      id: index + 1,
+      answer: typeof q.answer === 'string' ? q.answer.trim() : q.answer
     }));
 
     return {
@@ -165,11 +231,17 @@ export async function generateExplanationAction(
   }
 
   const prompt = `
+STRICT RULES:
+- Use clean math notation (x^2)
+- Fully simplified expressions only
+- Preserve formatting such as **bold**
+- Be concise and clear
+
 Question: "${question}"
 Student Answer: "${userAnswer}"
 Correct Answer: "${correctAnswer}"
 
-Explain why the student's answer is correct or incorrect in 2-3 sentences.
+Explain why the student's answer is correct or incorrect in 2–3 sentences.
 `;
 
   try {
