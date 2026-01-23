@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
-import { Quiz, Question } from "@/lib/types";
+import { Quiz } from "@/lib/types";
 import { clsx } from "clsx";
 import { CheckCircle2, Circle, ArrowRight, Check } from "lucide-react";
+import { formatText } from "@/lib/formatText";
 
 interface QuizClientProps {
   id: string;
@@ -19,12 +20,10 @@ export function QuizClient({ id }: QuizClientProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load quiz from localStorage
     const savedQuiz = localStorage.getItem(id);
     if (savedQuiz) {
       setQuiz(JSON.parse(savedQuiz));
     } else {
-      // Handle not found
       console.error("Quiz not found");
     }
     setLoading(false);
@@ -35,7 +34,7 @@ export function QuizClient({ id }: QuizClientProps) {
       <div className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary" />
         </div>
       </div>
     );
@@ -68,7 +67,7 @@ export function QuizClient({ id }: QuizClientProps) {
   const handleAnswer = (answer: string) => {
     setAnswers((prev) => ({
       ...prev,
-      [currentQuestion.id]: answer,
+      [currentQuestion.id]: answer.trim(),
     }));
   };
 
@@ -81,23 +80,19 @@ export function QuizClient({ id }: QuizClientProps) {
   };
 
   const handleSubmit = () => {
-    // Calculate score (simple exact match for now)
     let score = 0;
     quiz.questions.forEach((q) => {
-      if (answers[q.id] === q.answer) {
-        score++;
-      }
+      if (answers[q.id] === q.answer) score++;
     });
 
-    // Save results
     const result = {
       quizId: id,
       score,
       total: quiz.questions.length,
       answers,
     };
-    localStorage.setItem(`${id}-result`, JSON.stringify(result));
 
+    localStorage.setItem(`${id}-result`, JSON.stringify(result));
     router.push(`/app/quiz/${id}/results`);
   };
 
@@ -106,7 +101,7 @@ export function QuizClient({ id }: QuizClientProps) {
       <Header />
 
       <main className="flex-1 flex flex-col max-w-3xl mx-auto w-full p-6">
-        {/* Progress Bar */}
+        {/* Progress */}
         <div className="mb-8">
           <div className="flex justify-between text-sm text-muted-foreground mb-2">
             <span>
@@ -116,16 +111,16 @@ export function QuizClient({ id }: QuizClientProps) {
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary transition-all duration-300 ease-out"
+              className="h-full bg-primary transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        {/* Question Card */}
+        {/* Question */}
         <div className="bg-card border border-border rounded-xl p-8 shadow-lg flex-1 flex flex-col">
           <h2 className="text-2xl font-bold mb-8">
-            {currentQuestion.question}
+            {formatText(currentQuestion.question)}
           </h2>
 
           <div className="flex-1 space-y-4">
@@ -139,18 +134,14 @@ export function QuizClient({ id }: QuizClientProps) {
                     className={clsx(
                       "w-full text-left p-4 rounded-lg border-2 transition-all flex items-center justify-between group",
                       isSelected
-                        ? "border-gradient bg-primary/10 text-primary-foreground"
+                        ? "border-gradient bg-primary/10"
                         : "border-border hover:border-gradient hover:bg-muted/50"
                     )}
                   >
-                    <span
-                      className={clsx(
-                        "font-medium",
-                        isSelected ? "text-gradient" : "text-foreground"
-                      )}
-                    >
-                      {option}
+                    <span className="font-medium">
+                      {formatText(option)}
                     </span>
+
                     {isSelected ? (
                       <CheckCircle2 className="w-5 h-5 text-gradient" />
                     ) : (
@@ -163,7 +154,9 @@ export function QuizClient({ id }: QuizClientProps) {
             {currentQuestion.type === "short-answer" && (
               <textarea
                 value={answers[currentQuestion.id] || ""}
-                onChange={(e) => handleAnswer(e.target.value)}
+                onChange={(e) =>
+                  handleAnswer(e.target.value.replace(/\s*\/\s*/g, "/"))
+                }
                 placeholder="Type your answer here..."
                 className="w-full h-32 bg-background border border-border rounded-lg p-4 resize-none focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
@@ -174,11 +167,14 @@ export function QuizClient({ id }: QuizClientProps) {
             <button
               onClick={handleNext}
               disabled={!answers[currentQuestion.id]}
-              className="bg-gradient text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="bg-gradient text-white font-bold py-3 px-8 rounded-lg flex items-center gap-2 disabled:opacity-50"
             >
               {isLastQuestion ? "Submit Quiz" : "Next Question"}
-              {!isLastQuestion && <ArrowRight className="w-4 h-4" />}
-              {isLastQuestion && <Check className="w-4 h-4" />}
+              {isLastQuestion ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <ArrowRight className="w-4 h-4" />
+              )}
             </button>
           </div>
         </div>
