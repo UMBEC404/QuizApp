@@ -123,6 +123,7 @@ export function QuizClient({ id }: QuizClientProps) {
             {formatText(currentQuestion.question)}
           </h2>
 
+
           <div className="flex-1 space-y-4">
             {currentQuestion.type === "multiple-choice" &&
               currentQuestion.options?.map((option, idx) => {
@@ -141,6 +142,7 @@ export function QuizClient({ id }: QuizClientProps) {
                     <span className="font-medium">
                       {formatText(option)}
                     </span>
+
 
                     {isSelected ? (
                       <CheckCircle2 className="w-5 h-5 text-gradient" />
